@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8-Bit 夏日像素風格 // 檔案掃毒大挑戰 (Summer Pixel Edition)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: DotGothic16 (Pixel TC) & Press Start 2P (Pixel EN) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        pixel: ['DotGothic16', 'Press Start 2P', 'monospace'],
+                        enpixel: ['Press Start 2P', 'cursive']
+                    },
+                    colors: {
+                        summer: {
+                            yellow: '#FFD166',
+                            blue: '#118AB2',
+                            red: '#EF476F',
+                            green: '#06D6A0',
+                            cream: '#FFFDF0',
+                            dark: '#073B4C',
+                            ocean: '#075985'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* 8-BIT RETRO PIXEL STYLING RULES */
+        body {
+            font-family: 'DotGothic16', monospace;
+            background-color: #118AB2;
+            background-image: 
+                radial-gradient(#FFD166 15%, transparent 16%),
+                radial-gradient(#06D6A0 15%, transparent 16%);
+            background-size: 32px 32px;
+            background-position: 0 0, 16px 16px;
+        }
+
+        /* Pixel Border Box & Shadows */
+        .pixel-box {
+            background-color: #FFFDF0;
+            border: 4px solid #000000;
+            box-shadow: 4px 4px 0px #000000;
+        }
+
+        .pixel-box-dark {
+            background-color: #073B4C;
+            border: 4px solid #000000;
+            box-shadow: 4px 4px 0px #000000;
+        }
+
+        .pixel-btn {
+            border: 4px solid #000000;
+            box-shadow: 4px 4px 0px #000000;
+            transition: all 0.1s ease;
+        }
+
+        .pixel-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #000000;
+        }
+
+        .pixel-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000000;
+        }
+
+        .pixel-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: 4px 4px 0px #000000 !important;
+        }
+
+        /* Custom Pixel Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFD166;
+            border-left: 3px solid #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #EF476F;
+            border: 2px solid #000;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06D6A0;
+        }
+
+        /* 8-Bit Scanline animation */
+        .pixel-scanline {
+            background: linear-gradient(
+                rgba(255, 255, 255, 0),
+                rgba(255, 209, 102, 0.15) 50%,
+                rgba(255, 255, 255, 0)
+            );
+            background-size: 100% 8px;
+            pointer-events: none;
+        }
+
+        /* Screen Shake Glitch */
+        @keyframes pixel-shake {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(-4px, 4px); }
+            50% { transform: translate(4px, -4px); }
+            75% { transform: translate(-4px, -4px); }
+            100% { transform: translate(0, 0); }
+        }
+        .shake-effect {
+            animation: pixel-shake 0.25s infinite;
+        }
+    </style>
+</head>
+<body class="text-summer-dark h-screen flex flex-col overflow-hidden select-none p-2 sm:p-3 relative">
+    
+    <!-- 8-BIT TOP HEADER BANNER -->
+    <header class="pixel-box bg-summer-yellow p-3 mb-2 flex flex-wrap items-center justify-between gap-2 shrink-0 z-10">
+        <!-- Logo & Title -->
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-summer-red border-4 border-black flex items-center justify-center text-2xl shadow-[2px_2px_0px_#000]">
+                👾
+            </div>
+            <div>
+                <h1 class="text-base sm:text-lg font-black tracking-wider text-summer-dark font-pixel flex items-center gap-2">
+                    FIND VIRUS // 夏日像素防毒大搜查 ☀️
+                </h1>
+                <p class="text-xs text-summer-ocean font-bold">夏日海灘特別版：找出潛伏在系統檔案裡的惡意病毒！</p>
+            </div>
+        </div>
+
+        <!-- Dashboard Stats -->
+        <div class="flex flex-wrap items-center gap-3 text-xs font-bold">
+            <!-- Health / Battery (Watermelon Power) -->
+            <div class="pixel-box bg-summer-cream px-3 py-1.5 flex items-center gap-2">
+                <span>🍉 電力:</span>
+                <div class="w-24 h-4 bg-slate-300 border-2 border-black overflow-hidden relative">
+                    <div id="health-bar" class="h-full bg-summer-red transition-all duration-300" style="width: 100%;"></div>
+                </div>
+                <span id="health-text" class="text-summer-red">100%</span>
+            </div>
+
+            <!-- Virus Exterminated Counter -->
+            <div class="pixel-box bg-summer-cream px-3 py-1.5 flex items-center gap-1.5">
+                <span>👾 潛伏病毒:</span>
+                <span id="virus-count" class="text-summer-red font-black text-sm">0 / 0</span>
+            </div>
+
+            <!-- Coconut Score -->
+            <div class="pixel-box bg-summer-cream px-3 py-1.5 flex items-center gap-1.5">
+                <span>🥥 椰子積分:</span>
+                <span id="score-text" class="text-amber-600 font-black text-sm">0</span>
+            </div>
+
+            <!-- Scan Energy (Sunglasses) -->
+            <div class="pixel-box bg-summer-cream px-3 py-1.5 flex items-center gap-1.5">
+                <span>🕶️ 掃描能量:</span>
+                <span id="scan-credits" class="text-summer-blue font-black text-sm">3</span>
+            </div>
+
+            <!-- Timer -->
+            <div class="pixel-box bg-summer-cream px-3 py-1.5 flex items-center gap-1.5">
+                <span>⏳ 倒數:</span>
+                <span id="timer-text" class="text-summer-dark font-black text-sm">01:40</span>
+            </div>
+
+            <!-- Sound & Encyclopedia Buttons -->
+            <div class="flex items-center gap-2 pl-1">
+                <button id="btn-sound" class="pixel-btn bg-summer-green p-2 text-summer-dark" title="切換音效">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+                <button id="btn-encyclopedia" class="pixel-btn bg-summer-blue text-white px-3 py-1.5 flex items-center gap-1.5 text-xs font-bold" title="夏日防毒大百科">
+                    <span>📖 8-Bit 防毒百科</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN GAME LAYOUT -->
+    <main class="flex-1 flex flex-col md:flex-row gap-2.5 overflow-hidden">
+
+        <!-- LEFT SIDEBAR: DIRECTORY FILE TREE -->
+        <aside class="w-full md:w-60 pixel-box bg-summer-cream flex flex-col overflow-hidden shrink-0">
+            <div class="p-2.5 bg-summer-blue text-white font-bold border-b-4 border-black flex items-center justify-between">
+                <span class="flex items-center gap-1.5 text-xs">
+                    📁 檔案系統目錄
+                </span>
+                <span id="level-badge" class="bg-summer-yellow text-summer-dark border-2 border-black text-[10px] px-1.5 py-0.5">關卡 1</span>
+            </div>
+
+            <!-- Folder Tree List -->
+            <div id="folder-tree" class="flex-1 overflow-y-auto p-2 space-y-1.5 text-xs">
+                <!-- Dynamically Rendered Folders -->
+            </div>
+
+            <!-- Extension Filter Bar -->
+            <div class="p-2 bg-summer-yellow border-t-4 border-black font-bold">
+                <div class="text-[11px] mb-1 text-summer-dark flex items-center gap-1">
+                    🔍 快速篩選副檔名:
+                </div>
+                <div id="filter-chips" class="flex flex-wrap gap-1">
+                    <button class="filter-btn pixel-btn bg-summer-cream text-summer-dark text-[10px] px-2 py-0.5 font-bold" data-ext="ALL">全部</button>
+                    <button class="filter-btn pixel-btn bg-summer-cream text-summer-dark text-[10px] px-2 py-0.5" data-ext=".exe">.exe</button>
+                    <button class="filter-btn pixel-btn bg-summer-cream text-summer-dark text-[10px] px-2 py-0.5" data-ext=".dll">.dll</button>
+                    <button class="filter-btn pixel-btn bg-summer-cream text-summer-dark text-[10px] px-2 py-0.5" data-ext=".zip">.zip</button>
+                    <button class="filter-btn pixel-btn bg-summer-cream text-summer-dark text-[10px] px-2 py-0.5" data-ext=".pdf">.pdf</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTER: FILE EXPLORER VIEW -->
+        <section class="flex-1 pixel-box bg-summer-cream flex flex-col overflow-hidden">
+            <!-- Explorer Navigation Bar -->
+            <div class="p-2 bg-summer-yellow border-b-4 border-black flex flex-wrap items-center gap-2">
+                <button id="btn-path-up" class="pixel-btn bg-summer-cream p-1.5 text-xs" title="回到根目錄">
+                    ⬆️ 根目錄
+                </button>
+                
+                <div class="flex-1 bg-white border-2 border-black px-2.5 py-1 text-xs font-bold text-summer-dark truncate">
+                    🏝️ 位置: C:\<span id="current-path-text">Beach_Photos</span>
+                </div>
+
+                <!-- Search Input -->
+                <div class="w-48 relative">
+                    <input type="text" id="search-input" placeholder="搜尋檔名/亂碼..." class="w-full bg-white border-2 border-black px-2 py-1 text-xs text-summer-dark font-bold placeholder-slate-400 focus:outline-none">
+                </div>
+            </div>
+
+            <!-- File Grid Container -->
+            <div id="file-explorer-grid" class="flex-1 overflow-y-auto p-3">
+                <!-- Dynamically Rendered File Cards -->
+            </div>
+
+            <!-- Explorer Status Footer -->
+            <div class="p-2 bg-summer-cream border-t-4 border-black text-[11px] font-bold text-summer-dark flex justify-between items-center">
+                <span id="folder-status-text">包含 0 個檔案</span>
+                <span class="text-summer-red font-bold">
+                    ⚠️ 嚴防：容量爆表 💥、亂碼混淆 🔣、偽裝雙副檔名 🎭 與未來時間軸 ⏳！
+                </span>
+            </div>
+        </section>
+
+        <!-- RIGHT: 8-BIT INSPECTION & DIAGNOSTIC PANEL -->
+        <aside class="w-full md:w-80 pixel-box bg-summer-cream flex flex-col overflow-hidden shrink-0">
+            <div class="p-2.5 bg-summer-green text-summer-dark font-bold border-b-4 border-black flex items-center justify-between">
+                <span class="flex items-center gap-1.5 text-xs">
+                    🔍 8-Bit 檔案檢視儀
+                </span>
+                <span id="scan-status-pill" class="text-[10px] bg-white border-2 border-black px-1.5 py-0.5">未選取</span>
+            </div>
+
+            <div id="inspector-body" class="flex-1 overflow-y-auto p-2.5 space-y-2.5 text-xs font-bold">
+                <!-- Default State -->
+                <div class="h-full flex flex-col items-center justify-center text-center text-slate-500 py-12 space-y-2">
+                    <span class="text-4xl">🏖️</span>
+                    <p>請點擊左側檔案<br>進行 8-bit Hex、容量與資訊熵深度剖析</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons Footer -->
+            <div id="inspector-actions" class="p-2.5 bg-summer-yellow border-t-4 border-black space-y-2">
+                <button id="btn-scan-file" disabled class="w-full pixel-btn bg-summer-blue text-white py-2 text-xs font-bold flex items-center justify-center gap-2">
+                    🕶️ 消耗能量特徵深度掃描 (剩餘 <span id="btn-scan-count">3</span> 點)
+                </button>
+                <button id="btn-delete-file" disabled class="w-full pixel-btn bg-summer-red text-white py-2 text-xs font-bold flex items-center justify-center gap-2">
+                    👾 判定威脅並進行隔離/殲滅
+                </button>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- BOTTOM ARCADE TERMINAL LOG -->
+    <footer class="h-24 pixel-box bg-summer-dark text-white p-2 flex flex-col font-mono text-xs shrink-0 mt-2">
+        <div class="flex items-center justify-between border-b-2 border-slate-600 pb-1 mb-1 text-[11px] text-summer-yellow font-bold">
+            <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-summer-green animate-ping"></span>
+                📟 8-BIT ARCADE 資安事件日誌 (REAL-TIME CONSOLE)
+            </span>
+            <button id="btn-clear-log" class="text-[10px] text-slate-400 hover:text-white">清除記錄</button>
+        </div>
+        <div id="console-log" class="flex-1 overflow-y-auto space-y-1 text-[11px]">
+            <!-- Dynamic Real-time Logs -->
+        </div>
+    </footer>
+
+    <!-- MODAL 1: ☀️ SUMMER ANTIVIRUS ENCYCLOPEDIA (夏日防毒大百科) -->
+    <div id="modal-encyclopedia" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-3 hidden">
+        <div class="pixel-box bg-summer-cream max-w-2xl w-full p-4 max-h-[85vh] flex flex-col relative">
+            <button id="btn-close-encyclopedia" class="absolute top-3 right-3 pixel-btn bg-summer-red text-white px-2 py-0.5 text-xs font-bold">
+                ✖️
+            </button>
+
+            <div class="flex items-center gap-3 border-b-4 border-black pb-3 mb-3">
+                <div class="w-10 h-10 bg-summer-yellow border-4 border-black flex items-center justify-center text-2xl">
+                    ☀️
+                </div>
+                <div>
+                    <h2 class="text-base font-black text-summer-dark">☀️ 夏日防毒大百科 (Summer Threat Knowledge)</h2>
+                    <p class="text-xs text-summer-ocean font-bold">完整掌握 6 大檔案異常特徵與安全防禦原理</p>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto space-y-3 text-xs pr-1">
+                <!-- 1. Clean File -->
+                <div class="p-3 bg-white border-4 border-black space-y-1">
+                    <div class="text-summer-green font-black flex items-center gap-1.5 text-sm">
+                        🟢 1. 沒有異常 (Clean File)
+                    </div>
+                    <p class="text-slate-700 leading-relaxed font-bold">
+                        【正常檔案】符合標準副檔名規範，容量大小合理 (幾 KB ~ 數十 MB)，時間戳記符合當前時間，資訊熵較低，內文無混淆雜訊，屬於可信任的正常資料。
+                    </p>
+                </div>
+
+                <!-- 2. Garbled / Corrupted Payload -->
+                <div class="p-3 bg-white border-4 border-black space-y-1">
+                    <div class="text-purple-600 font-black flex items-center gap-1.5 text-sm">
+                        🔣 2. 亂碼與怪異字元 (Garbled / Corrupted Payload)
+                    </div>
+                    <p class="text-slate-700 leading-relaxed font-bold">
+                        【混淆腳本】內文出現大量非文字符號 `?!@#$%^&*`，或檔名夾雜特殊字元。惡意程式常透過「代碼混淆 (Obfuscation)」掩蓋真實 API 呼叫，企圖繞過防毒特徵碼比對！
+                    </p>
+                </div>
+
+                <!-- 3. Oversized Bomb -->
+                <div class="p-3 bg-white border-4 border-black space-y-1">
+                    <div class="text-summer-red font-black flex items-center gap-1.5 text-sm">
+                        💥 3. 容量爆表 (Oversized Bomb / Decompression Bomb)
+                    </div>
+                    <p class="text-slate-700 leading-relaxed font-bold">
+                        【解壓縮炸彈 / 零 Byte 毀損】標示容量出現極度誇張的數值 (如 888.8 TB、99.9 PB) 或 0 Byte 檔。駭客利用極高壓縮比演算法或垃圾字元填充 (Padding)，意圖在掃描時塞爆硬碟與記憶體造死機 (DoS)。
+                    </p>
+                </div>
+
+                <!-- 4. Double Extension -->
+                <div class="p-3 bg-white border-4 border-black space-y-1">
+                    <div class="text-amber-600 font-black flex items-center gap-1.5 text-sm">
+                        🎭 4. 偽裝雙副檔名 (Double Extension Camouflage)
+                    </div>
+                    <p class="text-slate-700 leading-relaxed font-bold">
+                        【假圖檔真執行檔】檔名命名為 `summer_photo.jpg.exe` 或 `beach_resort.pdf.scr`。利用系統隱藏已知副檔名之特性，誘騙使用者誤以為是普通的圖片或 PDF 文件而點擊執行。
+                    </p>
+                </div>
+
+                <!-- 5. High Entropy Payload -->
+                <div class="p-3 bg-white border-4 border-black space-y-1">
+                    <div class="text-summer-blue font-black flex items-center gap-1.5 text-sm">
+                        🔐 5. 高資訊熵 / 加密包 (High Entropy Payload)
+                    </div>
+                    <p class="text-slate-700 leading-relaxed font-bold">
+                        【加殼勒索病毒】資訊熵 (Entropy) 衡量資料位元之混亂程度。高達 7.8 ~ 8.0 代表資料經過強烈加殼 (Packer) 或已被加密，常見於勒索軟體 (Ransomware) 或保護木馬。
+                    </p>
+                </div>
+
+                <!-- 6. Timestamp Anomaly -->
+                <div class="p-3 bg-white border-4 border-black space-y-1">
+                    <div class="text-pink-600 font-black flex items-center gap-1.5 text-sm">
+                        ⏳ 6. 時間軸錯亂 (Timestamp Anomaly)
+                    </div>
+                    <p class="text-slate-700 leading-relaxed font-bold">
+                        【未來時間/極古老無效時間】修改時間出現在未來 (如 2099-12-31) 或無效年份 (如 1970)。這通常是木馬程式為了避開「近期修改檔案」安全審查所採用的「Timestomping (時間戳改寫)」偽裝戰術。
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-3 text-right">
+                <button id="btn-know-all" class="pixel-btn bg-summer-green text-summer-dark font-black px-4 py-2 text-xs">
+                    ☀️ 我已掌握防毒技巧，返回海灘大搜查！
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: VICTORY MODAL -->
+    <div id="modal-victory" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-3 hidden">
+        <div class="pixel-box bg-summer-cream max-w-md w-full p-6 text-center space-y-4">
+            <div class="w-16 h-16 bg-summer-yellow border-4 border-black flex items-center justify-center text-3xl mx-auto animate-bounce">
+                🏆
+            </div>
+            <h2 class="text-xl font-black text-summer-dark">SUMMER SECURED! 海灘防護成功！</h2>
+            <p id="victory-level-subtitle" class="text-xs font-bold text-summer-blue">關卡 1 潛伏病毒已完全清空！</p>
+
+            <div class="bg-white border-4 border-black p-4 space-y-2">
+                <div class="flex justify-around items-center font-bold">
+                    <div>
+                        <div class="text-[10px] text-slate-500">防護評級</div>
+                        <div id="victory-rank" class="text-3xl font-black text-amber-500">S</div>
+                    </div>
+                    <div class="w-1 h-8 bg-black"></div>
+                    <div>
+                        <div class="text-[10px] text-slate-500">累積椰子積分</div>
+                        <div id="victory-score" class="text-2xl font-black text-summer-blue">1200</div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btn-next-level" class="w-full pixel-btn bg-summer-green text-summer-dark font-black py-2.5 text-xs">
+                🌊 進入下一個夏日受威脅關卡 ➡️
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 3: GAME OVER MODAL -->
+    <div id="modal-gameover" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-3 hidden">
+        <div class="pixel-box bg-summer-cream max-w-md w-full p-6 text-center space-y-4">
+            <div class="w-16 h-16 bg-summer-red border-4 border-black flex items-center justify-center text-3xl mx-auto animate-pulse">
+                💥
+            </div>
+            <h2 class="text-xl font-black text-summer-red">SYSTEM CRASHED! 系統炸裂！</h2>
+            <p id="gameover-reason" class="text-xs font-bold text-slate-700">電力耗盡或過多正常檔案被誤刪！</p>
+
+            <div class="bg-white border-4 border-black p-3 text-xs font-bold text-slate-600">
+                潛伏病毒成功奪取作業系統控制權，海灘伺服器遭加密鎖定！
+            </div>
+
+            <button id="btn-restart" class="w-full pixel-btn bg-summer-yellow text-summer-dark font-black py-2.5 text-xs">
+                🔄 重置海灘伺服器並重新開始
+            </button>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT GAME ENGINE -->
+    <script>
+        /* --- 8-BIT CHIPTUNE AUDIO SYNTHESIZER (WEB AUDIO API) --- */
+        class RetroAudioEngine {
+            constructor() {
+                this.ctx = null;
+                this.muted = false;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+
+            // 8-bit Click Tone
+            playClick() {
+                if (this.muted) return;
+                this.init();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(300, this.ctx.currentTime + 0.04);
+                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.04);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.04);
+            }
+
+            // 8-bit Ascending Scan Arpeggio
+            playScan() {
+                if (this.muted) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const freqs = [330, 440, 554.37, 659.25, 880];
+                freqs.forEach((f, i) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(f, now + i * 0.05);
+                    gain.gain.setValueAtTime(0.1, now + i * 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.05 + 0.08);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + i * 0.05);
+                    osc.stop(now + i * 0.05 + 0.08);
+                });
+            }
+
+            // Virus Destroy Victory Sound
+            playVirusDestroy() {
+                if (this.muted) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.linearRampToValueAtTime(880, now + 0.2);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+
+            // Error Explosion / Strike Buzz
+            playError() {
+                if (this.muted) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(140, now);
+                osc.frequency.linearRampToValueAtTime(60, now + 0.25);
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+
+            // Level Victory Fanfare
+            playVictory() {
+                if (this.muted) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99];
+                notes.forEach((f, i) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(f, now + i * 0.08);
+                    gain.gain.setValueAtTime(0.12, now + i * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.15);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + i * 0.08);
+                    osc.stop(now + i * 0.08 + 0.15);
+                });
+            }
+
+            // Game Over Sound
+            playGameOver() {
+                if (this.muted) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(40, now + 0.6);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            }
+        }
+
+        const retroSound = new RetroAudioEngine();
+
+        /* --- LEVEL CONFIGURATIONS --- */
+        const LEVEL_CONFIGS = [
+            { level: 1, filesCount: 12, viruses: 2, time: 100, scanCredits: 3, folders: ['/Beach_Photos', '/System_Shell', '/Downloads'] },
+            { level: 2, filesCount: 18, viruses: 3, time: 110, scanCredits: 4, folders: ['/Beach_Photos', '/System_Shell', '/Downloads', '/Island_Cache'] },
+            { level: 3, filesCount: 24, viruses: 4, time: 120, scanCredits: 4, folders: ['/Beach_Photos', '/System_Shell', '/Downloads', '/Island_Cache', '/Resort_Docs'] },
+            { level: 4, filesCount: 30, viruses: 5, time: 130, scanCredits: 5, folders: ['/Beach_Photos', '/System_Shell', '/Downloads', '/Island_Cache', '/Resort_Docs'] },
+            { level: 5, filesCount: 36, viruses: 6, time: 140, scanCredits: 5, folders: ['/Beach_Photos', '/System_Shell', '/Downloads', '/Island_Cache', '/Resort_Docs'] }
+        ];
+
+        /* --- GAME STATE --- */
+        let gameState = {
+            currentLevelIndex: 0,
+            health: 100,
+            score: 0,
+            timeRemaining: 0,
+            scanCredits: 3,
+            virusesRemaining: 0,
+            totalViruses: 0,
+            currentDir: '/Beach_Photos',
+            selectedFile: null,
+            fileTree: [],
+            activeFilterExt: 'ALL',
+            searchQuery: '',
+            timerInterval: null
+        };
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function getRandomFloat(min, max, decimals = 2) {
+            return parseFloat((Math.random() * (max - min) + min).toFixed(decimals));
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        /* --- PROCEDURAL FILE GENERATOR (6 ANOMALY TYPES) --- */
+        function generateLevelFiles(config) {
+            const files = [];
+            let virusAssigned = 0;
+
+            const baseNormalTemplates = [
+                { name: 'beach_volleyball_match.mp4', dir: '/Beach_Photos', ext: '.mp4', size: '14.2 MB', header: '00 00 00 18 66 74 79 70', preview: 'FTYP....Beach Volleyball Tournament HD Video' },
+                { name: 'tropical_resort_map.pdf', dir: '/Resort_Docs', ext: '.pdf', size: '850 KB', header: '25 50 44 46 2D 31 2E 37', preview: '%PDF-1.7 Tropical Resort Island Navigation Map' },
+                { name: 'sunscreen_formula.doc', dir: '/Resort_Docs', ext: '.doc', size: '48 KB', header: 'D0 CF 11 E0 A1 B1 1A E1', preview: 'SPF-50 Waterproof Sunscreen Recipe Document' },
+                { name: 'island_bgm_track.mp3', dir: '/Downloads', ext: '.mp3', size: '3.8 MB', header: '49 44 33 03 00 00 00 00', preview: 'ID3...Summer Chiptune Beach Party BGM Loop' },
+                { name: 'ocean_kernel_core.sys', dir: '/System_Shell', ext: '.sys', size: '1.1 MB', header: '4D 5A 90 00 03 00 00 00', preview: 'MZ..........Windows Kernel Graphics Subsystem' },
+                { name: 'coconut_shake_recipe.txt', dir: '/Resort_Docs', ext: '.txt', size: '8 KB', header: '54 61 73 74 79 20 43 6F', preview: 'Tasty Coconut Shake Ingredients: Ice, Milk, Sugar' },
+            ];
+
+            // 1. Generate base clean files
+            for (let i = 0; i < config.filesCount; i++) {
+                const targetDir = config.folders[i % config.folders.length];
+                const base = baseNormalTemplates[i % baseNormalTemplates.length];
+                const randSuffix = Math.floor(Math.random() * 899 + 100);
+
+                let fName = base.name.includes('.') ? base.name.replace('.', `_${randSuffix}.`) : base.name + randSuffix;
+
+                files.push({
+                    id: 'file_' + i + '_' + Date.now(),
+                    name: fName,
+                    dir: targetDir,
+                    ext: fName.substring(fName.lastIndexOf('.')),
+                    size: base.size,
+                    creationDate: '2026-07-15 ' + getRandomInt(10, 18) + ':' + getRandomInt(10, 59),
+                    entropy: getRandomFloat(2.1, 4.5),
+                    hexHeader: base.header,
+                    codePreview: base.preview,
+                    isVirus: false,
+                    virusType: null,
+                    anomalyType: 'CLEAN', // 1. Clean
+                    isScanned: false,
+                    diagnosticAnalysis: '🟢【安全診斷】檔案屬性合規，資訊熵與時間戳記正常，未包含已知惡意特徵碼。'
+                });
+            }
+
+            // 2. Assign Viruses among 5 Malware Anomaly Types
+            const virusAnomalies = [
+                'GARBLED',            // 🔣 亂碼與怪異字元
+                'OVERSIZED_BOMB',     // 💥 容量爆表 (Zip Bomb)
+                'DOUBLE_EXT',         // 🎭 偽裝雙副檔名
+                'HIGH_ENTROPY',       // 🔐 高資訊熵加密包
+                'TIMESTAMP_ANOMALY'   // ⏳ 時間軸錯亂 (未來時間)
+            ];
+
+            while (virusAssigned < config.viruses) {
+                const idx = getRandomInt(0, files.length - 1);
+                if (!files[idx].isVirus) {
+                    const f = files[idx];
+                    f.isVirus = true;
+
+                    const anomaly = virusAnomalies[virusAssigned % virusAnomalies.length];
+                    f.anomalyType = anomaly;
+
+                    if (anomaly === 'GARBLED') {
+                        f.virusType = 'GARBLED_OBFUSCATED_PAYLOAD';
+                        f.name = `?!@#$%^&_x90_runner_${getRandomInt(10, 99)}.sh`;
+                        f.ext = '.sh';
+                        f.size = '32.4 KB';
+                        f.entropy = getRandomFloat(6.8, 7.5);
+                        f.hexHeader = '3F 21 40 23 24 25 5E 26';
+                        f.codePreview = '?!@#$%^&*()_eval(unescape("%23%38_EXPLOIT_MALWARE"));';
+                        f.diagnosticAnalysis = '🔣【亂碼混淆威脅】檔名與內容充滿混淆符號 `?!@#$%^&*`，企圖繞過防毒關鍵字掃描！';
+                    }
+                    else if (anomaly === 'OVERSIZED_BOMB') {
+                        f.virusType = 'DECOMPRESSION_ZIP_BOMB';
+                        f.name = `beach_party_archive_${getRandomInt(10, 99)}.zip`;
+                        f.ext = '.zip';
+                        f.size = Math.random() > 0.5 ? '888.8 TB' : '99.9 PB'; // 容量爆表!
+                        f.entropy = 7.92;
+                        f.hexHeader = '50 4B 03 04 14 00 00 00';
+                        f.codePreview = '[ZIP_BOMB_PAYLOAD] COMPRESSION_RATIO 1:10000000 (NEVER_EXTRACT)';
+                        f.diagnosticAnalysis = '💥【容量爆表威脅】偵測到不合常理的 TB/PB 級超巨大容量，屬於解壓縮炸彈 DoS 攻擊！';
+                    }
+                    else if (anomaly === 'DOUBLE_EXT') {
+                        f.virusType = 'CAMOUFLAGED_DOUBLE_EXT';
+                        f.name = `summer_resort_photo_${getRandomInt(10, 99)}.jpg.exe`;
+                        f.ext = '.exe';
+                        f.size = '2.1 MB';
+                        f.entropy = getRandomFloat(6.2, 7.2);
+                        f.hexHeader = '4D 5A 90 00 03 00 00 00';
+                        f.codePreview = 'MZ..........[DOUBLE_EXTENSION_EXECUTABLE_CAMOUFLAGE]';
+                        f.diagnosticAnalysis = '🎭【偽裝雙副檔名】檔名假冒 `.jpg` 圖片，實則為 `.exe` 可執行惡意檔案！';
+                    }
+                    else if (anomaly === 'HIGH_ENTROPY') {
+                        f.virusType = 'ENCRYPTED_RANSOMWARE';
+                        f.name = `crypto_vault_key_${getRandomInt(10, 99)}.dll`;
+                        f.ext = '.dll';
+                        f.size = '5.4 MB';
+                        f.entropy = getRandomFloat(7.85, 7.99); // 高資訊熵!
+                        f.hexHeader = '8F E1 90 33 FC AA 77 FF';
+                        f.codePreview = '0x8F 0xFE 0xAA [ENCRYPTED_RANSOMWARE_PAYLOAD_LOCKED]';
+                        f.diagnosticAnalysis = '🔐【高資訊熵加密包】資訊熵高達 7.85+，代表位元極度混亂，為加殼勒索軟體！';
+                    }
+                    else if (anomaly === 'TIMESTAMP_ANOMALY') {
+                        f.virusType = 'TIMESTOMP_FUTURE_STEALTH';
+                        f.name = `system_sync_update_${getRandomInt(10, 99)}.exe`;
+                        f.ext = '.exe';
+                        f.size = '1.9 MB';
+                        f.creationDate = '2099-12-31 23:59'; // 未來時間!
+                        f.entropy = getRandomFloat(6.5, 7.3);
+                        f.hexHeader = '4D 5A 90 00 54 53 54 50';
+                        f.codePreview = 'MZ..........[TIMESTOMPING_ANOMALY_FUTURE_HOOK]';
+                        f.diagnosticAnalysis = '⏳【時間軸錯亂威脅】修改日期出現在 2099 未來時間，為惡意程式規避審查的 Timestomping 戰術！';
+                    }
+
+                    virusAssigned++;
+                }
+            }
+
+            return files;
+        }
+
+        /* --- UI RENDER FUNCTIONS --- */
+        function renderDirectoryTree() {
+            const treeContainer = document.getElementById('folder-tree');
+            treeContainer.innerHTML = '';
+
+            const config = LEVEL_CONFIGS[gameState.currentLevelIndex];
+            config.folders.forEach(dir => {
+                const count = gameState.fileTree.filter(f => f.dir === dir).length;
+                const isActive = gameState.currentDir === dir;
+
+                const div = document.createElement('div');
+                div.className = `p-2 border-2 border-black font-bold flex items-center justify-between cursor-pointer transition ${
+                    isActive ? 'bg-summer-yellow text-summer-dark shadow-[2px_2px_0px_#000]' : 'bg-white hover:bg-slate-100'
+                }`;
+                div.innerHTML = `
+                    <div class="flex items-center gap-1.5 truncate">
+                        <span>${isActive ? '📂' : '📁'}</span>
+                        <span class="truncate">${dir}</span>
+                    </div>
+                    <span class="bg-black text-white text-[10px] px-1 py-0.2">${count}</span>
+                `;
+                div.onclick = () => {
+                    retroSound.playClick();
+                    gameState.currentDir = dir;
+                    gameState.selectedFile = null;
+                    renderDirectoryTree();
+                    renderFileExplorer();
+                    renderInspector();
+                };
+                treeContainer.appendChild(div);
+            });
+        }
+
+        function getFileIconEmoji(file) {
+            if (file.anomalyType === 'OVERSIZED_BOMB') return '💥';
+            if (file.anomalyType === 'GARBLED' || file.name.includes('?!@')) return '🔣';
+            if (file.name.endsWith('.jpg.exe')) return '🎭';
+            if (file.ext === '.exe') return '⚙️';
+            if (file.ext === '.dll') return '🔧';
+            if (file.ext === '.zip') return '📦';
+            if (file.ext === '.mp4') return '🎬';
+            if (file.ext === '.mp3') return '🎵';
+            if (file.ext === '.pdf') return '📄';
+            return '📄';
+        }
+
+        function renderFileExplorer() {
+            const explorerContainer = document.getElementById('file-explorer-grid');
+            document.getElementById('current-path-text').textContent = gameState.currentDir;
+
+            let dirFiles = gameState.fileTree.filter(f => f.dir === gameState.currentDir);
+
+            if (gameState.activeFilterExt !== 'ALL') {
+                dirFiles = dirFiles.filter(f => f.ext === gameState.activeFilterExt || f.name.endsWith(gameState.activeFilterExt));
+            }
+
+            if (gameState.searchQuery.trim() !== '') {
+                const q = gameState.searchQuery.toLowerCase();
+                dirFiles = dirFiles.filter(f => f.name.toLowerCase().includes(q) || f.ext.toLowerCase().includes(q));
+            }
+
+            document.getElementById('folder-status-text').textContent = `包含 ${dirFiles.length} 個檔案`;
+
+            if (dirFiles.length === 0) {
+                explorerContainer.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-slate-400 py-12 font-bold text-xs space-y-2">
+                        <span class="text-4xl">🏝️</span>
+                        <p>此目錄下無符合條件的檔案</p>
+                    </div>
+                `;
+                return;
+            }
+
+            explorerContainer.innerHTML = '';
+            const gridDiv = document.createElement('div');
+            gridDiv.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs font-bold';
+
+            dirFiles.forEach(file => {
+                const isSelected = gameState.selectedFile && gameState.selectedFile.id === file.id;
+                const emojiIcon = getFileIconEmoji(file);
+
+                const card = document.createElement('div');
+                card.className = `p-2.5 border-4 border-black cursor-pointer flex items-center justify-between transition ${
+                    isSelected 
+                        ? 'bg-summer-yellow shadow-[4px_4px_0px_#000]' 
+                        : 'bg-white hover:bg-slate-100 shadow-[2px_2px_0px_#000]'
+                }`;
+
+                let badgeHTML = '';
+                if (file.isScanned) {
+                    if (file.isVirus) {
+                        badgeHTML = `<span class="bg-summer-red text-white border border-black px-1 py-0.5 text-[9px] font-black">威脅 100%</span>`;
+                    } else {
+                        badgeHTML = `<span class="bg-summer-green text-summer-dark border border-black px-1 py-0.5 text-[9px] font-black">安全 0%</span>`;
+                    }
+                } else if (file.size.includes('TB') || file.size.includes('PB')) {
+                    badgeHTML = `<span class="bg-summer-red text-white border border-black px-1 py-0.5 text-[9px] animate-pulse">容量爆表</span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-2 overflow-hidden">
+                        <span class="text-xl shrink-0">${emojiIcon}</span>
+                        <div class="truncate">
+                            <div class="truncate ${isSelected ? 'text-summer-dark font-black' : 'text-slate-800'}">${file.name}</div>
+                            <div class="text-[10px] text-slate-500 flex items-center gap-1.5">
+                                <span class="${file.size.includes('TB') || file.size.includes('PB') ? 'text-summer-red font-black' : ''}">${file.size}</span>
+                                <span>•</span>
+                                <span>${file.ext}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shrink-0 pl-1">
+                        ${badgeHTML}
+                    </div>
+                `;
+
+                card.onclick = () => {
+                    retroSound.playClick();
+                    gameState.selectedFile = file;
+                    renderFileExplorer();
+                    renderInspector();
+                };
+
+                gridDiv.appendChild(card);
+            });
+
+            explorerContainer.appendChild(gridDiv);
+        }
+
+        function renderInspector() {
+            const inspectorBody = document.getElementById('inspector-body');
+            const scanStatusPill = document.getElementById('scan-status-pill');
+            const btnScan = document.getElementById('btn-scan-file');
+            const btnDelete = document.getElementById('btn-delete-file');
+            const btnScanCount = document.getElementById('btn-scan-count');
+
+            const file = gameState.selectedFile;
+            btnScanCount.textContent = gameState.scanCredits;
+
+            if (!file) {
+                scanStatusPill.textContent = '未選取';
+                scanStatusPill.className = 'text-[10px] bg-white border-2 border-black px-1.5 py-0.5';
+                
+                inspectorBody.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-center text-slate-500 py-12 space-y-2">
+                        <span class="text-4xl">🏖️</span>
+                        <p>請點擊左側檔案<br>進行 8-bit Hex、容量與資訊熵深度剖析</p>
+                    </div>
+                `;
+                btnScan.disabled = true;
+                btnDelete.disabled = true;
+                return;
+            }
+
+            // Scan status pill styling
+            if (file.isScanned) {
+                if (file.isVirus) {
+                    scanStatusPill.textContent = '👾 嚴重威脅';
+                    scanStatusPill.className = 'text-[10px] bg-summer-red text-white font-black border-2 border-black px-1.5 py-0.5 animate-pulse';
+                } else {
+                    scanStatusPill.textContent = '🟢 安全無毒';
+                    scanStatusPill.className = 'text-[10px] bg-summer-green text-summer-dark font-black border-2 border-black px-1.5 py-0.5';
+                }
+            } else {
+                scanStatusPill.textContent = '未特徵掃描';
+                scanStatusPill.className = 'text-[10px] bg-summer-yellow text-summer-dark font-bold border-2 border-black px-1.5 py-0.5';
+            }
+
+            // Entropy Meter setup
+            const entropyPct = Math.min(100, Math.max(0, (file.entropy / 8.0) * 100));
+            let entropyBarColor = 'bg-summer-green';
+            if (file.entropy > 5.5 && file.entropy <= 7.5) entropyBarColor = 'bg-summer-yellow';
+            if (file.entropy > 7.5) entropyBarColor = 'bg-summer-red';
+
+            inspectorBody.innerHTML = `
+                <!-- File Basic Meta -->
+                <div class="p-2.5 bg-white border-4 border-black space-y-1.5">
+                    <div class="text-summer-dark font-black break-all flex items-center gap-1.5">
+                        <span>📄</span> ${file.name}
+                    </div>
+                    <div class="grid grid-cols-2 gap-1 text-[11px] text-slate-600 border-t-2 border-black pt-1.5">
+                        <div>副檔名: <span class="text-black font-bold">${file.ext}</span></div>
+                        <div>檔案容量: <span class="${file.size.includes('TB') || file.size.includes('PB') ? 'text-summer-red font-black' : 'text-black font-bold'}">${file.size}</span></div>
+                        <div class="col-span-2">建立時間: <span class="${file.creationDate.includes('2099') ? 'text-summer-red font-black' : 'text-black font-bold'}">${file.creationDate}</span></div>
+                    </div>
+                </div>
+
+                <!-- Entropy Meter -->
+                <div class="p-2.5 bg-white border-4 border-black space-y-1">
+                    <div class="flex justify-between items-center text-[11px]">
+                        <span>📊 資訊熵 (Entropy)</span>
+                        <span class="font-black ${file.entropy > 7.5 ? 'text-summer-red' : 'text-black'}">${file.entropy} / 8.0</span>
+                    </div>
+                    <div class="w-full h-3 bg-slate-200 border-2 border-black overflow-hidden relative">
+                        <div class="h-full ${entropyBarColor} transition-all duration-300" style="width: ${entropyPct}%;"></div>
+                    </div>
+                </div>
+
+                <!-- Hex / Code Preview -->
+                <div class="p-2.5 bg-white border-4 border-black space-y-1">
+                    <div class="text-[11px] text-slate-700 font-bold">💻 Hex 標頭與記憶體碼段</div>
+                    <div class="p-2 bg-summer-dark text-summer-yellow border-2 border-black font-mono text-[10px] break-all select-text">
+                        <div>[HEX]: ${file.hexHeader}</div>
+                        <div class="text-white mt-1">[CODE]: ${file.codePreview}</div>
+                    </div>
+                </div>
+
+                <!-- Real-time Diagnostic Analysis Panel -->
+                <div class="p-2.5 bg-white border-4 border-black space-y-1">
+                    <div class="text-[11px] text-summer-blue font-black flex items-center gap-1">
+                        🧠 即時資安診斷與威脅分析
+                    </div>
+                    <p class="text-[11px] text-slate-700 leading-relaxed font-bold bg-slate-100 p-2 border-2 border-black">
+                        ${file.diagnosticAnalysis}
+                    </p>
+                </div>
+
+                <!-- Scan Verdict Box -->
+                ${file.isScanned ? `
+                    <div class="p-2.5 ${file.isVirus ? 'bg-summer-red text-white' : 'bg-summer-green text-summer-dark'} border-4 border-black font-bold text-[11px]">
+                        <div class="font-black mb-0.5">${file.isVirus ? '⚠️ 掃描報告: 確認為惡意病毒威脅！' : '✅ 掃描報告: 特徵碼完全安全！'}</div>
+                        <p class="text-[10px]">${file.isVirus ? `包含 [${file.virusType}] 惡意載荷，請立即執行刪除隔離！` : '無包含已知防毒威脅標記。'}</p>
+                    </div>
+                ` : ''}
+            `;
+
+            // Enable buttons logic
+            btnScan.disabled = file.isScanned || gameState.scanCredits <= 0;
+            btnDelete.disabled = false;
+        }
+
+        function logConsole(message, type = 'normal') {
+            const consoleLog = document.getElementById('console-log');
+            const time = new Date().toLocaleTimeString('zh-TW', { hour12: false });
+            
+            let colorClass = 'text-white';
+            if (type === 'success') colorClass = 'text-summer-green font-bold';
+            if (type === 'warning') colorClass = 'text-summer-yellow font-bold';
+            if (type === 'error') colorClass = 'text-summer-red font-bold';
+
+            const item = document.createElement('div');
+            item.className = `${colorClass} flex items-start gap-1.5`;
+            item.innerHTML = `<span class="text-slate-400 shrink-0">[${time}]</span> <span>${message}</span>`;
+            
+            consoleLog.appendChild(item);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+        }
+
+        /* --- GAME MECHANICS CONTROLLER --- */
+        function updateUIStats() {
+            document.getElementById('health-text').textContent = `${gameState.health}%`;
+            document.getElementById('health-bar').style.width = `${gameState.health}%`;
+            
+            document.getElementById('virus-count').textContent = `${gameState.virusesRemaining} / ${gameState.totalViruses}`;
+            document.getElementById('scan-credits').textContent = gameState.scanCredits;
+            document.getElementById('score-text').textContent = gameState.score;
+            document.getElementById('timer-text').textContent = formatTime(gameState.timeRemaining);
+            document.getElementById('level-badge').textContent = `關卡 ${gameState.currentLevelIndex + 1}`;
+        }
+
+        function startTimer() {
+            clearInterval(gameState.timerInterval);
+            gameState.timerInterval = setInterval(() => {
+                if (gameState.timeRemaining > 0) {
+                    gameState.timeRemaining--;
+                    updateUIStats();
+                } else {
+                    clearInterval(gameState.timerInterval);
+                    triggerGameOver('⏳ 時間耗盡：潛伏病毒已啟動勒索軟體並鎖定主機！');
+                }
+            }, 1000);
+        }
+
+        function initLevel(levelIndex) {
+            gameState.currentLevelIndex = levelIndex;
+            const config = LEVEL_CONFIGS[levelIndex];
+
+            gameState.fileTree = generateLevelFiles(config);
+            gameState.totalViruses = config.viruses;
+            gameState.virusesRemaining = config.viruses;
+            gameState.scanCredits = config.scanCredits;
+            gameState.timeRemaining = config.time;
+            gameState.currentDir = config.folders[0];
+            gameState.selectedFile = null;
+            gameState.searchQuery = '';
+
+            renderDirectoryTree();
+            renderFileExplorer();
+            renderInspector();
+            updateUIStats();
+            startTimer();
+
+            logConsole(`===================================================`, 'warning');
+            logConsole(`[關卡 ${levelIndex + 1}] 夏日防毒任務啟動！檔案系統中藏有 ${config.viruses} 個惡意威脅！`, 'warning');
+        }
+
+        function handleScanFile() {
+            const file = gameState.selectedFile;
+            if (!file || file.isScanned || gameState.scanCredits <= 0) return;
+
+            retroSound.playScan();
+            gameState.scanCredits--;
+            file.isScanned = true;
+
+            logConsole(`[深度掃描] 正在對 (${file.name}) 執行特徵碼比對...`, 'normal');
+            
+            updateUIStats();
+            renderInspector();
+            renderFileExplorer();
+
+            if (file.isVirus) {
+                logConsole(`[掃描結果] 👾 警告！發現惡意病毒: [${file.virusType}]！`, 'error');
+            } else {
+                logConsole(`[掃描結果] 🟢 比對通過，此檔案安全無毒。`, 'success');
+            }
+        }
+
+        function handleDeleteFile() {
+            const file = gameState.selectedFile;
+            if (!file) return;
+
+            if (file.isVirus) {
+                // Correctly exterminated a virus
+                retroSound.playVirusDestroy();
+                gameState.virusesRemaining--;
+                gameState.score += 400;
+
+                // Bonus scan credit on successful purge
+                if (gameState.scanCredits < 5) gameState.scanCredits++;
+
+                logConsole(`[成功殲滅] 成功消除病毒 [${file.name}]！🥥 椰子積分 +400，獲得 1 點掃描能量。`, 'success');
+
+                gameState.fileTree = gameState.fileTree.filter(f => f.id !== file.id);
+                gameState.selectedFile = null;
+
+                renderFileExplorer();
+                renderInspector();
+                renderDirectoryTree();
+                updateUIStats();
+
+                // Victory Check
+                if (gameState.virusesRemaining <= 0) {
+                    clearInterval(gameState.timerInterval);
+                    setTimeout(triggerVictory, 400);
+                }
+            } else {
+                // Mistakenly deleted a safe file!
+                retroSound.playError();
+                gameState.health = Math.max(0, gameState.health - 25);
+                gameState.score = Math.max(0, gameState.score - 200);
+
+                // Shake screen
+                document.body.classList.add('shake-effect');
+                setTimeout(() => document.body.classList.remove('shake-effect'), 250);
+
+                logConsole(`[誤刪警告] 錯誤誤刪正常檔案 [${file.name}]！🍉 電力 -25%，積分 -200`, 'error');
+
+                gameState.fileTree = gameState.fileTree.filter(f => f.id !== file.id);
+                gameState.selectedFile = null;
+
+                renderFileExplorer();
+                renderInspector();
+                renderDirectoryTree();
+                updateUIStats();
+
+                if (gameState.health <= 0) {
+                    clearInterval(gameState.timerInterval);
+                    setTimeout(() => triggerGameOver('過多正常檔案被誤刪，系統核心崩潰！'), 400);
+                }
+            }
+        }
+
+        function calculateRank() {
+            if (gameState.health >= 100 && gameState.timeRemaining > 40) return 'S';
+            if (gameState.health >= 75) return 'A';
+            if (gameState.health >= 50) return 'B';
+            return 'C';
+        }
+
+        function triggerVictory() {
+            retroSound.playVictory();
+            const rank = calculateRank();
+            document.getElementById('victory-rank').textContent = rank;
+            document.getElementById('victory-score').textContent = gameState.score;
+            document.getElementById('victory-level-subtitle').textContent = `關卡 ${gameState.currentLevelIndex + 1} 防護任務順利完成！`;
+
+            document.getElementById('modal-victory').classList.remove('hidden');
+        }
+
+        function triggerGameOver(reason) {
+            retroSound.playGameOver();
+            document.getElementById('gameover-reason').textContent = reason;
+            document.getElementById('modal-gameover').classList.remove('hidden');
+        }
+
+        /* --- INITIALIZATION & EVENT LISTENERS --- */
+        window.addEventListener('DOMContentLoaded', () => {
+            // Extension Filter Buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    retroSound.playClick();
+                    document.querySelectorAll('.filter-btn').forEach(b => {
+                        b.className = 'filter-btn pixel-btn bg-summer-cream text-summer-dark text-[10px] px-2 py-0.5';
+                    });
+                    e.target.className = 'filter-btn pixel-btn bg-summer-blue text-white text-[10px] px-2 py-0.5 font-bold';
+                    
+                    gameState.activeFilterExt = e.target.getAttribute('data-ext');
+                    renderFileExplorer();
+                });
+            });
+
+            // Search Filter Input
+            document.getElementById('search-input').addEventListener('input', (e) => {
+                gameState.searchQuery = e.target.value;
+                renderFileExplorer();
+            });
+
+            // Buttons
+            document.getElementById('btn-scan-file').addEventListener('click', handleScanFile);
+            document.getElementById('btn-delete-file').addEventListener('click', handleDeleteFile);
+
+            document.getElementById('btn-path-up').addEventListener('click', () => {
+                retroSound.playClick();
+                gameState.currentDir = LEVEL_CONFIGS[gameState.currentLevelIndex].folders[0];
+                renderDirectoryTree();
+                renderFileExplorer();
+            });
+
+            document.getElementById('btn-clear-log').addEventListener('click', () => {
+                document.getElementById('console-log').innerHTML = '';
+            });
+
+            // Encyclopedia Modal
+            document.getElementById('btn-encyclopedia').addEventListener('click', () => {
+                retroSound.playClick();
+                document.getElementById('modal-encyclopedia').classList.remove('hidden');
+            });
+            document.getElementById('btn-close-encyclopedia').addEventListener('click', () => {
+                document.getElementById('modal-encyclopedia').classList.add('hidden');
+            });
+            document.getElementById('btn-know-all').addEventListener('click', () => {
+                retroSound.playClick();
+                document.getElementById('modal-encyclopedia').classList.add('hidden');
+            });
+
+            // Sound Toggle
+            document.getElementById('btn-sound').addEventListener('click', () => {
+                retroSound.muted = !retroSound.muted;
+                const icon = document.getElementById('btn-sound').querySelector('i');
+                icon.className = retroSound.muted ? 'fa-solid fa-volume-xmark text-summer-red' : 'fa-solid fa-volume-high text-summer-dark';
+            });
+
+            // Victory Next Level
+            document.getElementById('btn-next-level').addEventListener('click', () => {
+                retroSound.playClick();
+                document.getElementById('modal-victory').classList.add('hidden');
+                if (gameState.currentLevelIndex + 1 < LEVEL_CONFIGS.length) {
+                    initLevel(gameState.currentLevelIndex + 1);
+                } else {
+                    initLevel(0); // Restart with accumulated score
+                }
+            });
+
+            // Restart Button
+            document.getElementById('btn-restart').addEventListener('click', () => {
+                retroSound.playClick();
+                document.getElementById('modal-gameover').classList.add('hidden');
+                gameState.health = 100;
+                gameState.score = 0;
+                initLevel(0);
+            });
+
+            // Initialize Level 1
+            initLevel(0);
+        });
+    </script>
+</body>
+</html>
